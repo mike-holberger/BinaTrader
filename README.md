@@ -1,5 +1,5 @@
 # BinaTrader
-This program uses a 2 phases "ladder" style trading strategy to profit from sideways-trending market volitility oscilations (on Binance Exchange).
+This program uses a 2-phase "ladder" style trading strategy to profit from sideways-trending market volitility oscilations (on Binance Exchange).
 
 Language: C#
 
