@@ -12,4 +12,7 @@ Then when all these spread following orders, after several profit cycles, become
 Phase 2 grids out stationary orders (at 0.5% intervals) on both sides, inside the created price window. Then as the price oscillates inside the window, these orders are executed and corresponding take-profit orders are placed at (+/-0.75%)
 then if the price moves to the boundaries of the window, it executes the phase 1 take profits, cancels the phase2 open orders, (leaving phase2 take profit orders open). This initiates phase 1 and adjusts the window boundaries using the original (phase 1) moving, spread following orders.
 
-Parameters such as interval percentages and wager amount can be adjusted in the P1_Strategy class SETTINGS internal class.
+
+API Keys are entered inside the App.Config file. Only one key-pair is required. 
+
+Parameters such as interval percentages and wager amount can be adjusted in the Strategy_Phase1 class file: SETTINGS internal class.
