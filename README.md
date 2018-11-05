@@ -13,4 +13,4 @@ then if the price moves to the boundaries of the window, it executes the phase 1
 
 API Keys are entered inside the App.Config file. Only one key-pair is required. 
 
-Parameters such as interval percentages and wager amount can be adjusted in the Strategy_Phase1 class file: SETTINGS internal class.
+Parameters such as price intervals (percentages) and wager amount can be adjusted in the Strategy_Phase1 class file: SETTINGS internal class.
