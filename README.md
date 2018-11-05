@@ -3,7 +3,7 @@ This program uses a 2 phases "ladder" style trading strategy to profit from side
 
 Language: C#
 
-Framework Target: .NET 4.6+
+Framework Target: .NET 4.7+
 
 In Phase 1: (5) orders are  on either side of the book spread middle (at 0.5% price intervals) that move to follow the spread, then place stationary take profits (+/-0.75%) on execution. Then when all these spread following orders, after several profit cycles, become stationary take profits on the high and low end of price movement, and the price drifts in between, inside this window. Then Phase 2 is initiated.
 
