@@ -21,7 +21,7 @@ namespace BinaTrader
             public const decimal grid_interval = 0.005M; // half-percent intervals
             public const int MaxOrdsPerSide = 5; // Max Number of orders placed on EITHER SIDE (buy/sell)
             public const decimal TakeProfitMargin = 0.0075M; // 0.75% profit
-            public const decimal PrimaryWager = 12M;  // Amount in USDT
+            public const decimal PrimaryWager = 14M;  // Amount in USDT
             public const decimal FeePercentage = 0.000M; // 0.1% if not paid in BNB
         }
 
@@ -68,6 +68,16 @@ namespace BinaTrader
                     P2_BuyOrders.Add(ordInfo);
                 else if (ID[1] == "Sell")
                     P2_SellOrders.Add(ordInfo);                
+            }
+            else if (ordInfo.Status == OrderStatus.PartiallyFilled)
+            {
+                if (ordInfo.StratState == StrategyState.OPEN)
+                    ordInfo.StratState = StrategyState.PARTIAL_FILL;
+                
+                if (ID[1] == "Buy")
+                    P2_BuyOrders.Add(ordInfo);
+                else if (ID[1] == "Sell")
+                    P2_SellOrders.Add(ordInfo);
             }
         }
 
@@ -190,6 +200,45 @@ namespace BinaTrader
                     newOrd.InitialPrice = p;
                     P2_BuyOrders.Add(newOrd);
                 }
+                // MOVE UP LOWER BUY ORDERS 
+                else if (P2_BuyOrders.Any(o => o.StratState == StrategyState.OPEN && o.Price < p))
+                {
+                    // Cancel lowest buy order
+                    var minPrice = P2_BuyOrders.Where(o => o.StratState == StrategyState.OPEN).Min(o => o.Price);
+                    var oldOrder = P2_BuyOrders.First(o => o.Price == minPrice);
+
+                    var baseReturn = 0M;
+                    if (oldOrder.BaseCurrReturn != null)
+                        baseReturn = Convert.ToDecimal(oldOrder.BaseCurrReturn);
+
+                    var cancelResp = await BinaREST.CancelOrder(oldOrder.Symbol, oldOrder.ClientID);
+                    if (cancelResp != null)
+                        Log.Debug($">>> [P2_SELL] CANCELED - Price: {oldOrder.Price}");
+                    P2_BuyOrders.Remove(oldOrder);
+
+                    // Place order at correct price
+                    // If baseCurr != 0, use this to calc QTY, else primary wager
+                    var buyQty = Math.Round(SETTINGS.PrimaryWager / (p * (1 + SETTINGS.FeePercentage)), QtyRoundDigits);
+                    if (baseReturn != 0)
+                        buyQty = Math.Round(Convert.ToDecimal(baseReturn) / (p * (1 + SETTINGS.FeePercentage)), QtyRoundDigits);
+
+                    var order = new CreateOrderRequest()
+                    {
+                        Side = OrderSide.Buy,
+                        Symbol = MarketSymbol,
+                        Price = p,
+                        Quantity = buyQty,
+                        NewClientOrderId = "bin2_Buy_" + UniqueString()
+                    };
+                    var response = await BinaREST.CreateLimitOrder(order);
+                    if (response != null)
+                        Log.Debug($">>> [P2_BUY] ORDER PLACED - Price: {p}");
+
+                    // add order status to prevent repeat order
+                    var newOrd = new OrderInfo(order, StrategyState.OPEN_UNCONFIRMED);
+                    newOrd.InitialPrice = p;
+                    P2_BuyOrders.Add(newOrd);
+                }
             }
 
             // Same as above for sell side:
@@ -222,6 +271,40 @@ namespace BinaTrader
                 else if (P2_SellOrders.Count() < SETTINGS.MaxOrdsPerSide)
                 {
                     var sellQty = Math.Round(SETTINGS.PrimaryWager / (p * (1 - SETTINGS.FeePercentage)), QtyRoundDigits);
+                    var order = new CreateOrderRequest()
+                    {
+                        Side = OrderSide.Sell,
+                        Symbol = MarketSymbol,
+                        Price = p,
+                        Quantity = sellQty,
+                        NewClientOrderId = "bin2_Sell_" + UniqueString()
+                    };
+                    var response = await BinaREST.CreateLimitOrder(order);
+                    if (response != null)
+                        Log.Debug($">>> [P2_SELL] ORDER PLACED - Price: {p}");
+
+                    // add order status to prevent repeat order
+                    var newOrd = new OrderInfo(order, StrategyState.OPEN_UNCONFIRMED);
+                    newOrd.InitialPrice = p;
+                    P2_SellOrders.Add(newOrd);
+                }
+                // MOVE DOWN ANY HIGHER SELL ORDERS 
+                else if (P2_SellOrders.Any(o => o.StratState == StrategyState.OPEN && o.Price > p))
+                {
+                    // Cancel order
+                    var maxPrice = P2_SellOrders.Where(o => o.StratState == StrategyState.OPEN).Max(o => o.Price);
+                    var oldOrder = P2_SellOrders.First(o => o.Price == maxPrice);
+
+                    var baseCurr = (oldOrder.Price * (1 - SETTINGS.FeePercentage)) * oldOrder.Qty; 
+
+                    var cancelResp = await BinaREST.CancelOrder(oldOrder.Symbol, oldOrder.ClientID);
+                    if (cancelResp != null)
+                        Log.Debug($">>> [P2_SELL] CANCELED - Price: {oldOrder.Price}");
+                    P2_SellOrders.Remove(oldOrder);
+
+                    // Place order at correct price
+                    // use same BaseCurr wager amount 
+                    var sellQty = Math.Round(baseCurr / (p * (1 - SETTINGS.FeePercentage)), QtyRoundDigits);
                     var order = new CreateOrderRequest()
                     {
                         Side = OrderSide.Sell,
@@ -435,6 +518,14 @@ namespace BinaTrader
             P2_SellOrders = P2_SellOrders.Except(changedList).ToList();
             P2_SellOrders.AddRange(ordList);
         }
+
+
+        public void ResetOrderLists()
+        {
+            P2_BuyOrders = new List<OrderInfo>();
+            P2_SellOrders = new List<OrderInfo>();
+        }
+
 
         private string UniqueString()
         {

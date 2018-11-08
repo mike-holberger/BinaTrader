@@ -25,7 +25,7 @@ namespace BinaTrader
             public static IReadOnlyList<decimal> TierMultipliers = new List<decimal> { 1, 1.5M, 2, 2.5M, 3, 3.5M, 4, 4.3M, 4.6M, 4.9M, 5.2M, 5.5M}; // Margin distance* from center spread
             public const decimal MoveOrderThresh = 0.0008M; // Percent movement of middle spread
 
-            public const decimal PrimaryWager = 12M;  // Amount in USDT
+            public const decimal PrimaryWager = 14M;  // Amount in USDT
             public const decimal FeePercentage = 0.000M; // 0.1%
             public const decimal TakeProfitMargin = 0.007M; // 0.8% profit
 
@@ -495,7 +495,7 @@ namespace BinaTrader
             userDATA = new BinaDataUser();
             OpenBUYorders = new List<OrderInfo>();
             OpenSELLorders = new List<OrderInfo>();
-            StrategyP2 = new Strategy_Phase2(SETTINGS.SubSpecificSymbols[0], PriceRoundDigits, QtyRoundDigits);
+            StrategyP2.ResetOrderLists();
 
 
             // Check and sort currently open orders
