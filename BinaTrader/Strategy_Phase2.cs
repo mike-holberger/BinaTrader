@@ -18,10 +18,10 @@ namespace BinaTrader
     {
         internal static class SETTINGS
         {
-            public const decimal grid_interval = 0.005M; // half-percent intervals
-            public const int MaxOrdsPerSide = 5; // Max Number of orders placed on EITHER SIDE (buy/sell)
-            public const decimal TakeProfitMargin = 0.0075M; // 0.75% profit
-            public const decimal PrimaryWager = 14M;  // Amount in USDT
+            public const decimal grid_interval = 0.006M; // half-percent intervals
+            public const int MaxOrdsPerSide = 6; // Max Number of orders placed on EITHER SIDE (buy/sell)
+            public const decimal TakeProfitMargin = 0.009M; // 1% profit
+            public const decimal PrimaryWager = 63M;  // Amount in USDT
             public const decimal FeePercentage = 0.000M; // 0.1% if not paid in BNB
         }
 

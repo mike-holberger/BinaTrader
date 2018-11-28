@@ -20,16 +20,16 @@ namespace BinaTrader
                 "XLMUSDT"
             };
 
-            public const int Tiers = 5; // Number of orders placed on EITHER SIDE (buy/sell)
-            public const decimal PrimaryMargin = 0.0022M; // +/-(0.25%) each tier
+            public const int Tiers = 4; // Number of orders placed on EITHER SIDE (buy/sell)
+            public const decimal PrimaryMargin = 0.0023M; // +/-(0.25%) each tier
             public static IReadOnlyList<decimal> TierMultipliers = new List<decimal> { 1, 1.5M, 2, 2.5M, 3, 3.5M, 4, 4.3M, 4.6M, 4.9M, 5.2M, 5.5M}; // Margin distance* from center spread
             public const decimal MoveOrderThresh = 0.0008M; // Percent movement of middle spread
 
-            public const decimal PrimaryWager = 14M;  // Amount in USDT
+            public const decimal PrimaryWager = 63M;  // Amount in USDT
             public const decimal FeePercentage = 0.000M; // 0.1%
-            public const decimal TakeProfitMargin = 0.007M; // 0.8% profit
+            public const decimal TakeProfitMargin = 0.008M; // 0.8% profit
 
-            public static TimeSpan OrderExecDelay = TimeSpan.FromMilliseconds(1200); // Delay between order placements
+            public static TimeSpan OrderExecDelay = TimeSpan.FromMilliseconds(2000); // Delay between order placements
 
             public const bool MutePhase2 = false;
         }
