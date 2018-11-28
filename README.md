@@ -15,10 +15,12 @@ API Keys are entered inside the App.Config file. Only one key-pair is required.
 
 Parameters such as order price intervals (percentages) and wager amount can be adjusted in the Strategy_Phase1 class file: SETTINGS internal class.
 
-I am currently unemployed.
-
+I am currently unemployed. 
 Donations are graciously accepted to these addresses:
 
 XLM (Preferred): GCAV2NOEME3AP2JDOPIBJ7SJWVAEUMCWDRXPVF247OCH7UI7H434VDXL
+
 BTC: 13peRzTXpxkWw25JGsVaCMLLKm8Z4aEdni
+
 ETH: 0xEcC98aBF04Ad502cD232b76bbb7eBaD097fDEB7D
+
