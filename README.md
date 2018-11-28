@@ -17,8 +17,8 @@ Parameters such as order price intervals (percentages) and wager amount can be a
 
 
 
-### I am currently unemployed. 
-### Donations are graciously accepted to these addresses:
+## I am currently unemployed. 
+## Donations are graciously accepted to these addresses:
 
 XLM (Preferred): GCAV2NOEME3AP2JDOPIBJ7SJWVAEUMCWDRXPVF247OCH7UI7H434VDXL
 
